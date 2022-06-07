@@ -11,7 +11,11 @@ public static class DocumentParser
     static DocumentParser()
     {
         MainDirectory = new DirectoryInfo(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
+        Console.WriteLine();
+        Console.WriteLine(MainDirectory);
+        Console.WriteLine();
         FilesDirectory = Path.Combine(MainDirectory, "Files");
+        Console.WriteLine(FilesDirectory);
     }
 
     public static List<string> GetQuestions(string examFileNameWithExtension)
