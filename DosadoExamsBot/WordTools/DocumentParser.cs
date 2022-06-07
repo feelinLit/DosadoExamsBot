@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Aspose.Words;
+﻿using Aspose.Words;
 
 namespace DosadoExamsBot.WordTools;
 
@@ -10,12 +9,8 @@ public static class DocumentParser
 
     static DocumentParser()
     {
-        MainDirectory = new DirectoryInfo(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
-        Console.WriteLine();
-        Console.WriteLine(MainDirectory);
-        Console.WriteLine();
-        FilesDirectory = Path.Combine(MainDirectory, "Files");
-        Console.WriteLine(FilesDirectory);
+        MainDirectory = new DirectoryInfo(Environment.CurrentDirectory).Parent.FullName;
+        FilesDirectory = Path.Combine(MainDirectory, "DosadoExamsBot", "Files");
     }
 
     public static List<string> GetQuestions(string examFileNameWithExtension)
