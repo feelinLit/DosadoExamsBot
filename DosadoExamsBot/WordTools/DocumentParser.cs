@@ -10,14 +10,14 @@ public static class DocumentParser
 
     static DocumentParser()
     {
-        MainDirectory = GetCodeBaseDirectory(Assembly.GetExecutingAssembly());
-        FilesDirectory = MainDirectory + @"DosadoExamsBot\DosadoExamsBot" + @"\Files\";
+        MainDirectory = new DirectoryInfo(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
+        FilesDirectory = Path.Combine(MainDirectory, "Files");
     }
-    
+
     public static List<string> GetQuestions(string examFileNameWithExtension)
     {
         var questions = new List<string>();
-        var doc = new Document(FilesDirectory + examFileNameWithExtension);
+        var doc = new Document(Path.Combine(FilesDirectory, examFileNameWithExtension));
 
         var sec = (Section)doc.GetChild(NodeType.Section, 0, true);
         foreach (var paragraph in sec.Body.Paragraphs.Select(p => (Paragraph)p).Where(p => p.IsListItem))
@@ -26,13 +26,5 @@ public static class DocumentParser
         }
 
         return questions;
-    }
-    
-    private static string GetCodeBaseDirectory(Assembly assembly)
-    {
-        var uri = new Uri(assembly.Location);
-        string mainFolder = Path.GetDirectoryName(uri.LocalPath)
-            !.Substring(0, uri.LocalPath.IndexOf("DosadoExamsBot", StringComparison.Ordinal));
-        return mainFolder;
     }
 }
