@@ -2,15 +2,15 @@
 
 namespace DosadoExamsBot.Exams;
 
-public class MathematicalStatisticsExam
+public class Exam
 {
     private readonly List<string> _questions;
     private Random _random = new();
     private List<string> _randomQuestions;
 
-    public MathematicalStatisticsExam()
+    public Exam(string examFileName)
     {
-        _questions = DocumentParser.GetQuestions("MathematicalStatisticsExam.docx");
+        _questions = DocumentParser.GetQuestions(examFileName);
         _randomQuestions = new List<string>();
         ResetRandomQuestions();
     }

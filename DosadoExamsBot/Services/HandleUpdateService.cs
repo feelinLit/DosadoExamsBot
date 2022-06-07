@@ -12,7 +12,7 @@ public class HandleUpdateService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
-    private readonly MathematicalStatisticsExam _mathematicalStatisticsExam = new();
+    private readonly Exam _mathematicalStatisticsExam = new("MathematicalStatisticsExam.docx");
 
     public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger)
     {
@@ -52,7 +52,7 @@ public class HandleUpdateService
             "/inline"   => SendInlineKeyboard(_botClient, message),
             "/keyboard" => SendReplyKeyboard(_botClient, message),
             "/remove"   => RemoveKeyboard(_botClient, message),
-            "/МатСтат"  => RequestContactAndLocation(_botClient, message),
+            "/МатСтат"  => RequestMathStatQuestion(_botClient, message),
             _           => Usage(_botClient, message)
         };
         Message sentMessage = await action;
@@ -113,7 +113,7 @@ public class HandleUpdateService
                                                   replyMarkup: new ReplyKeyboardRemove());
         }
 
-        static async Task<Message> RequestContactAndLocation(ITelegramBotClient bot, Message message)
+        static async Task<Message> RequestMathStatQuestion(ITelegramBotClient bot, Message message)
         {
             ReplyKeyboardMarkup replyKeyboardMarkup = new(
                 new[]
@@ -136,8 +136,7 @@ public class HandleUpdateService
                                  "/inline   - send inline keyboard\n" +
                                  "/keyboard - send custom keyboard\n" +
                                  "/remove   - remove custom keyboard\n" +
-                                 "/photo    - send a photo\n" +
-                                 "/request  - request location or contact";
+                                 "/МатСтат  - случайный вопрос из экзамена по МатСтату";
 
             return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
                                                   text: usage,
@@ -148,6 +147,7 @@ public class HandleUpdateService
     // Process Inline Keyboard callback data
     private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery)
     {
+        
         await _botClient.AnswerCallbackQueryAsync(
             callbackQueryId: callbackQuery.Id,
             text: $"Received {callbackQuery.Data}");
@@ -162,7 +162,7 @@ public class HandleUpdateService
     private async Task BotOnInlineQueryReceived(InlineQuery inlineQuery)
     {
         _logger.LogInformation("Received inline query from: {inlineQueryFromId}", inlineQuery.From.Id);
-
+        
         InlineQueryResult[] results = {
             // displayed result
             new InlineQueryResultArticle(
