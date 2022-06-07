@@ -1,9 +1,9 @@
-﻿using Telegram.Bot;
+﻿using DosadoExamsBot.Exams;
+using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
-using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace DosadoExamsBot.Services;
@@ -12,6 +12,7 @@ public class HandleUpdateService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
+    private readonly MathematicalStatisticsExam _mathematicalStatisticsExam = new();
 
     public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger)
     {
@@ -23,14 +24,7 @@ public class HandleUpdateService
     {
         var handler = update.Type switch
         {
-            // UpdateType.Unknown:
-            // UpdateType.ChannelPost:
-            // UpdateType.EditedChannelPost:
-            // UpdateType.ShippingQuery:
-            // UpdateType.PreCheckoutQuery:
-            // UpdateType.Poll:
             UpdateType.Message            => BotOnMessageReceived(update.Message!),
-            UpdateType.EditedMessage      => BotOnMessageReceived(update.EditedMessage!),
             UpdateType.CallbackQuery      => BotOnCallbackQueryReceived(update.CallbackQuery!),
             UpdateType.InlineQuery        => BotOnInlineQueryReceived(update.InlineQuery!),
             UpdateType.ChosenInlineResult => BotOnChosenInlineResultReceived(update.ChosenInlineResult!),
@@ -58,8 +52,7 @@ public class HandleUpdateService
             "/inline"   => SendInlineKeyboard(_botClient, message),
             "/keyboard" => SendReplyKeyboard(_botClient, message),
             "/remove"   => RemoveKeyboard(_botClient, message),
-            "/photo"    => SendFile(_botClient, message),
-            "/request"  => RequestContactAndLocation(_botClient, message),
+            "/МатСтат"  => RequestContactAndLocation(_botClient, message),
             _           => Usage(_botClient, message)
         };
         Message sentMessage = await action;
@@ -120,31 +113,21 @@ public class HandleUpdateService
                                                   replyMarkup: new ReplyKeyboardRemove());
         }
 
-        static async Task<Message> SendFile(ITelegramBotClient bot, Message message)
-        {
-            await bot.SendChatActionAsync(message.Chat.Id, ChatAction.UploadPhoto);
-
-            const string filePath = @"Files/tux.png";
-            using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var fileName = filePath.Split(Path.DirectorySeparatorChar).Last();
-
-            return await bot.SendPhotoAsync(chatId: message.Chat.Id,
-                                            photo: new InputOnlineFile(fileStream, fileName),
-                                            caption: "Nice Picture");
-        }
-
         static async Task<Message> RequestContactAndLocation(ITelegramBotClient bot, Message message)
         {
-            ReplyKeyboardMarkup RequestReplyKeyboard = new(
+            ReplyKeyboardMarkup replyKeyboardMarkup = new(
                 new[]
                 {
-                    KeyboardButton.WithRequestLocation("Location"),
-                    KeyboardButton.WithRequestContact("Contact"),
-                });
+                    new KeyboardButton("Следующий вопрос 🈯"),
+                    new KeyboardButton("Закончить лютую ботку 🚬")
+                })
+            {
+                ResizeKeyboard = true
+            };
 
             return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
-                                                  text: "Who or Where are you?",
-                                                  replyMarkup: RequestReplyKeyboard);
+                                                  text: "Следующий вопрос?",
+                                                  replyMarkup: replyKeyboardMarkup);
         }
 
         static async Task<Message> Usage(ITelegramBotClient bot, Message message)
