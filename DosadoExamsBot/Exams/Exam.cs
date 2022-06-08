@@ -28,7 +28,7 @@ public class Exam
         }
 
         var index = _random.Next(0, _randomQuestions.Count);
-        var question = _randomQuestions[index];
+        var question = $"{_questions.IndexOf(_randomQuestions[index]) + 1}. " + _randomQuestions[index];
         _randomQuestions.RemoveAt(index);
         return question;
     }
