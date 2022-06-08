@@ -46,8 +46,8 @@ public class HandleUpdateService
 
         var action = message.Text!.Split(' ')[0] switch
         {
-            "/MathStat"  => RequestMathStatQuestion(_botClient, message),
-            "/DataBases"  => RequestDataBasesQuestion(_botClient, message),
+            "/mathstat"  => RequestMathStatQuestion(_botClient, message),
+            "/databases"  => RequestDataBasesQuestion(_botClient, message),
             _           => Usage(_botClient, message)
         };
         Message sentMessage = await action;
@@ -88,8 +88,8 @@ public class HandleUpdateService
         static async Task<Message> Usage(ITelegramBotClient bot, Message message)
         {
             const string usage = "Usage:\n" +
-                                 "/DataBases - случайный вопрос из экзамаена по БД\n" +
-                                 "/MathStat  - случайный вопрос из экзамена по МатСтату";
+                                 "/databases - случайный вопрос из экзамаена по БД\n" +
+                                 "/mathstat  - случайный вопрос из экзамена по МатСтату";
 
             return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
                                                   text: usage,
