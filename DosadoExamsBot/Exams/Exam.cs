@@ -8,14 +8,17 @@ public class Exam
     private Random _random = new();
     private List<string> _randomQuestions;
 
-    public Exam(string examFileName)
+    public Exam(ExamName examName, string examFileName)
     {
+        ExamName = examName;
         _questions = DocumentParser.GetQuestions(examFileName);
         _randomQuestions = new List<string>();
         ResetRandomQuestions();
     }
     
     public IReadOnlyList<string> Questions => _questions;
+
+    public ExamName ExamName { get; }
 
     public string GetRandomQuestion()
     {
