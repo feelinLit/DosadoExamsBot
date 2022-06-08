@@ -12,7 +12,6 @@ public class HandleUpdateService
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
     private Exam? _exam;
-    private static int _streakCount = 0;
 
     public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger)
     {
@@ -106,14 +105,11 @@ public class HandleUpdateService
             if (_exam?.ExamName is not ExamName.MathematicalStatistics)
             {
                 _exam = new Exam(ExamName.MathematicalStatistics, "MathematicalStatisticsExam.docx");
-                _streakCount = 0;
             }
 
-            _streakCount++;
             await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                                                     callbackQuery.Message.MessageId,
-                                                    _exam.GetRandomQuestion()
-                                                    + $" (Current streak: {_streakCount})",
+                                                    _exam.GetRandomQuestion(),
                                                     replyMarkup: callbackQuery.Message.ReplyMarkup);
         }
         
@@ -122,22 +118,20 @@ public class HandleUpdateService
             if (_exam?.ExamName is not ExamName.DataBases)
             {
                 _exam = new Exam(ExamName.DataBases, "DataBasesExam.docx");
-                _streakCount = 0;
             }
             
-            _streakCount++;
             await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id, 
                                                     callbackQuery.Message.MessageId, 
-                                                    _exam.GetRandomQuestion()
-                                                    + $" (Current streak: {_streakCount})",
+                                                    _exam.GetRandomQuestion(),
                                                     replyMarkup: callbackQuery.Message.ReplyMarkup);
         }
         
         if (callbackQuery.Data == "stop")
         {
             _exam = null;
+            var getUsageMessage = new Message();
+            getUsageMessage.Text = "Obvious bicycle";
             await BotOnMessageReceived(new Message());
-            _streakCount = 0;
         }
     }
 
