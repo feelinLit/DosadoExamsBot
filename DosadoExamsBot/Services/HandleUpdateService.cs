@@ -11,7 +11,7 @@ public class HandleUpdateService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
-    private Exam _exam;
+    private Exam? _exam;
     private static int _streakCount = 0;
 
     public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger)
@@ -103,7 +103,7 @@ public class HandleUpdateService
     {
         if (callbackQuery.Data == "MathStat")
         {
-            if (_exam.ExamName is not ExamName.MathematicalStatistics)
+            if (_exam?.ExamName is not ExamName.MathematicalStatistics)
             {
                 _exam = new Exam(ExamName.MathematicalStatistics, "MathematicalStatisticsExam.docx");
                 _streakCount = 0;
@@ -119,7 +119,7 @@ public class HandleUpdateService
         
         if (callbackQuery.Data == "DataBases")
         {
-            if (_exam.ExamName is not ExamName.DataBases)
+            if (_exam?.ExamName is not ExamName.DataBases)
             {
                 _exam = new Exam(ExamName.DataBases, "DataBasesExam.docx");
                 _streakCount = 0;
