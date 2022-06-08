@@ -129,12 +129,9 @@ public class HandleUpdateService
         if (callbackQuery.Data == "stop")
         {
             _exam = null;
-            var getUsageMessage = new Message();
-            getUsageMessage.Text = "Obvious bicycle";
-            await BotOnMessageReceived(getUsageMessage);
-            await _botClient.SendTextMessageAsync(
-                chatId: callbackQuery.Message!.Chat.Id,
-                text: "Хрш хрш");
+            await _botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id, 
+                                                    callbackQuery.Message.MessageId,
+                                                    "Это было легко 😎");
         }
     }
 
