@@ -77,7 +77,7 @@ public class HandleUpdateService
             InlineKeyboardMarkup inlineKeyboard = new(
                 new[]
                 {
-                    InlineKeyboardButton.WithCallbackData("Следующий вопрос 🈯", "MathStat"),
+                    InlineKeyboardButton.WithCallbackData("Следующий вопрос 🈯", "DataBases"),
                     InlineKeyboardButton.WithCallbackData("Закончить лютую ботку 🚬", "stop"),
                 });
 
@@ -135,6 +135,7 @@ public class HandleUpdateService
         
         if (callbackQuery.Data == "stop")
         {
+            _exam = null;
             await BotOnMessageReceived(new Message());
             _streakCount = 0;
         }
