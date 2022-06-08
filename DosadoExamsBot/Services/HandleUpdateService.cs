@@ -131,7 +131,10 @@ public class HandleUpdateService
             _exam = null;
             var getUsageMessage = new Message();
             getUsageMessage.Text = "Obvious bicycle";
-            await BotOnMessageReceived(new Message());
+            await BotOnMessageReceived(getUsageMessage);
+            await _botClient.SendTextMessageAsync(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Хрш хрш");
         }
     }
 
